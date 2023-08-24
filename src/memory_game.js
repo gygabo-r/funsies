@@ -27,16 +27,80 @@ const picture_codes = {
 };
 
 
+function pickPictures(numberOfPics) {
+    let pickedCodes = [];
+    let pics = Object.keys(picture_codes)
+    for (let i = 0; i < numberOfPics; i++) {
+        const index = Math.floor(Math.random() * pics.length);
+        pickedCodes.push(pics[index]);
+        pics.splice(index, 1);
+    }
+    pickedCodes = pickedCodes.reduce((acc, curr) => {
+        return [...acc, curr, curr]
+    }, []);
+    return pickedCodes;
+}
 
-
+function randomizePictures(pickedCodes) {
+    let randomizedPics = [];
+    let length = pickedCodes.length;
+    for (let i = 0; i < length; i++) {
+        const index = Math.floor(Math.random() * pickedCodes.length);
+        randomizedPics.push(pickedCodes[index]);
+        pickedCodes.splice(index, 1);
+    }
+    return randomizedPics;
+}
 
 function memory(){
-    for (key of Object.keys(picture_codes)){
+    // pick 8 pictures
+    let numberOfPics = 8;
+    let pickedCodes = pickPictures(numberOfPics);
+    let randomizedPics = randomizePictures(pickedCodes);
+    let choiceOne = '';
+    let choiceTwo = '';
+    let gameSet = new Set();
+
+    for (let i = 0; i < randomizedPics.length; i++){
         const button = document.createElement('button');
-        button.id = key;
-        button.innerHTML = picture_codes[key];
+        button.id = randomizedPics[i] + '-' + i;
         button.className = "button";
-        document.body.appendChild(button);
+        let pic = picture_codes[randomizedPics[i]];
+        button.onclick = () => {
+            if (choiceOne && choiceTwo){
+                if (!gameSet.has(choiceOne)){
+                    document.getElementById(choiceOne).innerHTML = '';
+                    document.getElementById(choiceTwo).innerHTML = '';
+                }
+
+                choiceOne = '';
+                choiceTwo = '';
+            }
+            if (!button.innerHTML) {
+                if (!choiceOne){
+                    choiceOne = button.id;
+                } else {
+                    if (!choiceTwo){
+                        choiceTwo = button.id;
+                    }
+                }
+                button.innerHTML = pic;
+            }
+
+            if (choiceOne && choiceTwo){
+                if (choiceOne.split('-')[0] === choiceTwo.split('-')[0]){
+                    gameSet.add(choiceOne);
+                    gameSet.add(choiceTwo);
+                }
+            }
+
+            if (gameSet.size === numberOfPics * 2){
+                alert('You won!');
+            }
+        };
+        const container = document.getElementById('grid-container');
+        container.style = 'grid-template-columns: auto auto auto auto';
+        container.appendChild(button);
     }
 }
 
