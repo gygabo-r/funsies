@@ -1,0 +1,18 @@
+:root{
+    --button-color: 0, 255, 0
+}
+
+.button {
+    background-color: rgba(var(--button-color), 0.5);
+    border: none;
+    color: white;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 6em;
+}
+
+.button:hover{
+    background-color: rgba(var(--button-color), 1);
+}
