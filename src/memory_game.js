@@ -34,7 +34,7 @@ function pickPictures(numberOfPics) {
     let pickedCodes = [];
     let pics = Object.keys(picture_codes)
     for (let i = 0; i < numberOfPics; i++) {
-        const index = Math.floor(Math.random() * pics.length);
+        const index = Math.floor(Math.random( ) * pics.length);
         pickedCodes.push(pics[index]);
         pics.splice(index, 1);
     }
@@ -76,7 +76,7 @@ function evaluateIfMatched() {
     }
 }
 
-function updateGameState(button, pic) {
+function updateGameState(button) {
     const innerCard = button.childNodes[1];
     innerCard.classList.add('flip-card-flipped');
     if (!choiceOne){
@@ -111,7 +111,7 @@ function memory(){
         button.onclick = () => {
             if (choiceOne === button.id || choiceTwo === button.id) return;
             clearStateOnEveryThirdClick();
-            updateGameState(button, pic);
+            updateGameState(button);
             evaluateIfMatched();
 
             if (gameSet.size === numberOfPics * 2){

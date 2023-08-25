@@ -1,5 +1,6 @@
 :root{
-    --button-color: 0, 255, 0
+    --button-color: 0, 255, 0;
+    --length: min(22vw, 22vh);
 }
 
 .card {
@@ -7,8 +8,8 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(var(--button-color), 0.5);
-    min-width: 1.3em;
-    min-height: 1.3em;
+    min-width: var(--length);
+    min-height: var(--length);
     cursor: pointer;
 }
 
@@ -18,9 +19,9 @@
 
 .flip-card {
     background-color: transparent;
-    width: 1.3em;
-    height: 1.3em;
-    font-size: 6em;
+    width: var(--length);
+    height: var(--length);
+    font-size: min(16vh, 16vw);
 }
 
 .flip-card-inner {
