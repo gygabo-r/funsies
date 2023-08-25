@@ -7,7 +7,6 @@
     justify-content: center;
     align-items: center;
     background-color: rgba(var(--button-color), 0.5);
-    color: white;
     min-width: 1.3em;
     min-height: 1.3em;
     cursor: pointer;
@@ -48,4 +47,5 @@
 .grid-container {
     display: grid;
     width: fit-content;
+    gap: 1em;
 }

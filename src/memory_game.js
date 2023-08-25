@@ -58,8 +58,8 @@ function randomizePictures(pickedCodes) {
 function clearStateOnEveryThirdClick() {
     if (choiceOne && choiceTwo) {
         if (!gameSet.has(choiceOne)) {
-            document.getElementById(choiceOne).innerHTML = '';
-            document.getElementById(choiceTwo).innerHTML = '';
+            document.getElementById(choiceOne).childNodes[1].classList.remove('flip-card-flipped');
+            document.getElementById(choiceTwo).childNodes[1].classList.remove('flip-card-flipped');
         }
 
         choiceOne = '';
@@ -102,7 +102,6 @@ function appendCard(randomizedPics, i) {
 }
 
 function memory(){
-    // pick 8 pictures
     let numberOfPics = 8;
     let pickedCodes = pickPictures(numberOfPics);
     let randomizedPics = randomizePictures(pickedCodes);
@@ -110,6 +109,7 @@ function memory(){
         const button = appendCard(randomizedPics, i);
         let pic = picture_codes[randomizedPics[i]];
         button.onclick = () => {
+            if (choiceOne === button.id || choiceTwo === button.id) return;
             clearStateOnEveryThirdClick();
             updateGameState(button, pic);
             evaluateIfMatched();
