@@ -90,13 +90,16 @@ function updateGameState(button, pic) {
 }
 
 function appendCard(randomizedPics, i) {
-    const button = document.createElement('button');
-    button.id = randomizedPics[i] + '-' + i;
-    button.className = "button";
+    const template = document.getElementById('card-template').cloneNode(true);
+    template.id = randomizedPics[i] + '-' + i;
+    const cardBackSide = template.childNodes[1].childNodes[3];
+    const sp = document.createElement('span');
+    sp.innerHTML = picture_codes[randomizedPics[i]];
+    cardBackSide.appendChild(sp);
     const container = document.getElementById('grid-container');
     container.style = 'grid-template-columns: auto auto auto auto';
-    container.appendChild(button);
-    return button;
+    container.appendChild(template);
+    return template;
 }
 
 function memory(){
