@@ -77,15 +77,14 @@ function evaluateIfMatched() {
 }
 
 function updateGameState(button, pic) {
-    if (!button.innerHTML) {
-        if (!choiceOne) {
-            choiceOne = button.id;
-        } else {
-            if (!choiceTwo) {
-                choiceTwo = button.id;
-            }
+    const innerCard = button.childNodes[1];
+    innerCard.classList.add('flip-card-flipped');
+    if (!choiceOne){
+        choiceOne = button.id;
+    } else {
+        if (!choiceTwo && choiceOne !== button.id){
+            choiceTwo = button.id;
         }
-        button.innerHTML = pic;
     }
 }
 
