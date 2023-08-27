@@ -101,7 +101,23 @@ function appendCard(randomizedPics, i) {
     return template;
 }
 
+function wireUpModal(){
+    const modal = document.getElementById("myModal");
+    const span = document.getElementsByClassName("close")[0];
+
+    span.onclick = () => modal.style.display = "none"
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    return () => modal.style.display = "block"
+}
+
 function memory(){
+    const onOpen = wireUpModal();
     let numberOfPics = 8;
     let pickedCodes = pickPictures(numberOfPics);
     let randomizedPics = randomizePictures(pickedCodes);
@@ -115,7 +131,7 @@ function memory(){
             evaluateIfMatched();
 
             if (gameSet.size === numberOfPics * 2){
-                alert('You won!');
+                onOpen();
             }
         };
 
