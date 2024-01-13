@@ -1,6 +1,5 @@
-let choiceOne = '';
-let choiceTwo = '';
 let gameSet = new Set();
+let currentSelection = new Set();
 const picture_codes = {
     "lion": "&#129409;",
     "robot": "&#129302;",
@@ -56,22 +55,27 @@ function randomizePictures(pickedCodes) {
 }
 
 function clearStateOnEveryThirdClick() {
-    if (choiceOne && choiceTwo) {
-        if (!gameSet.has(choiceOne)) {
-            document.getElementById(choiceOne).childNodes[1].classList.remove('flip-card-flipped');
-            document.getElementById(choiceTwo).childNodes[1].classList.remove('flip-card-flipped');
+    if (currentSelection.size > 1) {
+        const values = Array.from(currentSelection);
+        console.log(values);
+        console.log(Array.from(gameSet));
+        if (!gameSet.has(values[0])){
+            console.log('exec');
+            document.getElementById(values[0]).childNodes[1].classList.remove('flip-card-flipped');
+            document.getElementById(values[1]).childNodes[1].classList.remove('flip-card-flipped');
         }
-
-        choiceOne = '';
-        choiceTwo = '';
+        currentSelection = new Set();
     }
 }
 
 function evaluateIfMatched() {
-    if (choiceOne && choiceTwo) {
-        if (choiceOne.split('-')[0] === choiceTwo.split('-')[0]) {
-            gameSet.add(choiceOne);
-            gameSet.add(choiceTwo);
+    if (currentSelection.size > 1) {
+        const values = Array.from(currentSelection);
+        const first = values[0];
+        const second = values[1];
+        if (first.split('-')[0] === second.split('-')[0]) {
+            gameSet.add(first);
+            gameSet.add(second);
         }
     }
 }
@@ -79,13 +83,7 @@ function evaluateIfMatched() {
 function updateGameState(button) {
     const innerCard = button.childNodes[1];
     innerCard.classList.add('flip-card-flipped');
-    if (!choiceOne){
-        choiceOne = button.id;
-    } else {
-        if (!choiceTwo && choiceOne !== button.id){
-            choiceTwo = button.id;
-        }
-    }
+    currentSelection.add(button.id);
 }
 
 function appendCard(randomizedPics, i) {
@@ -109,8 +107,7 @@ function wireUpModal(onRestart){
 
     span.onclick = () => {
         modal.style.display = "none";
-        choiceOne = '';
-        choiceTwo = '';
+        currentSelection = new Set();
         gameSet = new Set();
         document.getElementById('grid-container').innerHTML = '';
         onRestart(onOpen);
@@ -119,8 +116,7 @@ function wireUpModal(onRestart){
     window.onclick = function(event) {
         if (event.target === modal) {
             modal.style.display = "none";
-            choiceOne = '';
-            choiceTwo = '';
+            currentSelection = new Set();
             gameSet = new Set();
             document.getElementById('grid-container').innerHTML = '';
             onRestart(onOpen);
@@ -138,7 +134,7 @@ function memory(onOpen){
         const button = appendCard(randomizedPics, i);
         let pic = picture_codes[randomizedPics[i]];
         button.onclick = () => {
-            if (choiceOne === button.id || choiceTwo === button.id) return;
+            if (currentSelection.has(button.id)) return;
             clearStateOnEveryThirdClick();
             updateGameState(button);
             evaluateIfMatched();
