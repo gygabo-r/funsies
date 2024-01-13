@@ -101,23 +101,36 @@ function appendCard(randomizedPics, i) {
     return template;
 }
 
-function wireUpModal(){
+function wireUpModal(onRestart){
     const modal = document.getElementById("myModal");
     const span = document.getElementsByClassName("close")[0];
 
-    span.onclick = () => modal.style.display = "none"
+    const onOpen = () => modal.style.display = "block"
+
+    span.onclick = () => {
+        modal.style.display = "none";
+        choiceOne = '';
+        choiceTwo = '';
+        gameSet = new Set();
+        document.getElementById('grid-container').innerHTML = '';
+        onRestart(onOpen);
+    }
 
     window.onclick = function(event) {
         if (event.target === modal) {
             modal.style.display = "none";
+            choiceOne = '';
+            choiceTwo = '';
+            gameSet = new Set();
+            document.getElementById('grid-container').innerHTML = '';
+            onRestart(onOpen);
         }
     }
 
-    return () => modal.style.display = "block"
+    return onOpen;
 }
 
-function memory(){
-    const onOpen = wireUpModal();
+function memory(onOpen){
     let numberOfPics = 8;
     let pickedCodes = pickPictures(numberOfPics);
     let randomizedPics = randomizePictures(pickedCodes);
@@ -139,5 +152,8 @@ function memory(){
 }
 
 (function (){
-    document.addEventListener('DOMContentLoaded', memory);
+    document.addEventListener('DOMContentLoaded', () => {
+        const onOpen = wireUpModal(memory);
+        memory(onOpen);
+    });
 })()
