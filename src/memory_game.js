@@ -1,5 +1,6 @@
 let gameSet = new Set();
 let currentSelection = new Set();
+const gridContainer = 'grid-container';
 const picture_codes = {
     "lion": "&#129409;",
     "robot": "&#129302;",
@@ -31,9 +32,9 @@ const picture_codes = {
 
 function pickPictures(numberOfPics) {
     let pickedCodes = [];
-    let pics = Object.keys(picture_codes)
+    let pics = Object.keys(picture_codes);
     for (let i = 0; i < numberOfPics; i++) {
-        const index = Math.floor(Math.random( ) * pics.length);
+        const index = Math.floor(Math.random() * pics.length);
         pickedCodes.push(pics[index]);
         pics.splice(index, 1);
     }
@@ -57,10 +58,7 @@ function randomizePictures(pickedCodes) {
 function clearStateOnEveryThirdClick() {
     if (currentSelection.size > 1) {
         const values = Array.from(currentSelection);
-        console.log(values);
-        console.log(Array.from(gameSet));
         if (!gameSet.has(values[0])){
-            console.log('exec');
             document.getElementById(values[0]).childNodes[1].classList.remove('flip-card-flipped');
             document.getElementById(values[1]).childNodes[1].classList.remove('flip-card-flipped');
         }
@@ -68,7 +66,7 @@ function clearStateOnEveryThirdClick() {
     }
 }
 
-function evaluateIfMatched() {
+function updateGameState() {
     if (currentSelection.size > 1) {
         const values = Array.from(currentSelection);
         const first = values[0];
@@ -80,10 +78,14 @@ function evaluateIfMatched() {
     }
 }
 
-function updateGameState(button) {
+function updateCurrenState(button) {
     const innerCard = button.childNodes[1];
     innerCard.classList.add('flip-card-flipped');
     currentSelection.add(button.id);
+}
+
+function getGameGrid() {
+    return document.getElementById(gridContainer);
 }
 
 function appendCard(randomizedPics, i) {
@@ -93,10 +95,19 @@ function appendCard(randomizedPics, i) {
     const sp = document.createElement('span');
     sp.innerHTML = picture_codes[randomizedPics[i]];
     cardBackSide.appendChild(sp);
-    const container = document.getElementById('grid-container');
-    container.style = 'grid-template-columns: auto auto auto auto';
-    container.appendChild(template);
+
+    const container = getGameGrid();
+
+    getGameGrid().appendChild(template);
     return template;
+}
+
+function resetGame(modal, onRestart, onOpen) {
+    modal.style.display = "none";
+    currentSelection = new Set();
+    gameSet = new Set();
+    getGameGrid().innerHTML = '';
+    onRestart(onOpen);
 }
 
 function wireUpModal(onRestart){
@@ -106,20 +117,12 @@ function wireUpModal(onRestart){
     const onOpen = () => modal.style.display = "block"
 
     span.onclick = () => {
-        modal.style.display = "none";
-        currentSelection = new Set();
-        gameSet = new Set();
-        document.getElementById('grid-container').innerHTML = '';
-        onRestart(onOpen);
+        resetGame(modal, onOpen, onRestart);
     }
 
     window.onclick = function(event) {
         if (event.target === modal) {
-            modal.style.display = "none";
-            currentSelection = new Set();
-            gameSet = new Set();
-            document.getElementById('grid-container').innerHTML = '';
-            onRestart(onOpen);
+            resetGame(modal, onOpen, onRestart);
         }
     }
 
@@ -128,16 +131,16 @@ function wireUpModal(onRestart){
 
 function memory(onOpen){
     let numberOfPics = 8;
+    getGameGrid().style = 'grid-template-columns: auto auto auto auto';
     let pickedCodes = pickPictures(numberOfPics);
     let randomizedPics = randomizePictures(pickedCodes);
     for (let i = 0; i < randomizedPics.length; i++){
         const button = appendCard(randomizedPics, i);
-        let pic = picture_codes[randomizedPics[i]];
         button.onclick = () => {
             if (currentSelection.has(button.id)) return;
             clearStateOnEveryThirdClick();
-            updateGameState(button);
-            evaluateIfMatched();
+            updateCurrenState(button);
+            updateGameState();
 
             if (gameSet.size === numberOfPics * 2){
                 onOpen();
